@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/long-horizon-agent/config.schema.json",
+  "title": "Long Horizon Agent Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["workspace_root", "llm", "context", "scheduler", "tools", "evaluation"],
+  "properties": {
+    "workspace_root": {"type": "string", "minLength": 1},
+    "llm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_url", "api_key_env", "model", "temperature", "max_output_tokens", "request_timeout_ms", "retry_count", "backoff_policy", "initial_backoff_ms"],
+      "properties": {
+        "base_url": {"type": "string", "pattern": "^https?://"},
+        "api_key_env": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+        "max_output_tokens": {"type": "integer", "minimum": 1},
+        "request_timeout_ms": {"type": "integer", "minimum": 1},
+        "retry_count": {"type": "integer", "minimum": 0, "maximum": 20},
+        "backoff_policy": {"enum": ["exponential", "linear"]},
+        "initial_backoff_ms": {"type": "integer", "minimum": 1}
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recent_action_window", "max_main_context_bytes", "max_artifact_snippet_bytes", "max_workspace_index_entries", "document_answer_context_bytes"],
+      "properties": {
+        "recent_action_window": {"type": "integer", "minimum": 1},
+        "max_main_context_bytes": {"type": "integer", "minimum": 2048},
+        "max_artifact_snippet_bytes": {"type": "integer", "minimum": 1},
+        "max_workspace_index_entries": {"type": "integer", "minimum": 1},
+        "document_answer_context_bytes": {"type": "integer", "minimum": 1024}
+      }
+    },
+    "scheduler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_total_steps", "max_recursion_depth", "max_retries_per_task", "consolidation_interval"],
+      "properties": {
+        "max_total_steps": {"type": "integer", "minimum": 1},
+        "max_recursion_depth": {"type": "integer", "minimum": 1},
+        "max_retries_per_task": {"type": "integer", "minimum": 0},
+        "consolidation_interval": {"type": "integer", "minimum": 1}
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "allowed_web_search_providers", "commercial_search_api_key_env", "pdf_extraction_command", "http_timeout_ms", "max_fetched_document_bytes", "max_redirects", "code_execution"],
+      "properties": {
+        "enabled": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "allowed_web_search_providers": {"type": "array", "uniqueItems": true, "items": {"enum": ["searxng", "commercial"]}},
+        "searxng_base_url": {"type": ["string", "null"]},
+        "commercial_search_base_url": {"type": ["string", "null"]},
+        "commercial_search_api_key_env": {"type": "string", "minLength": 1},
+        "pdf_extraction_command": {"type": "string", "minLength": 1},
+        "http_timeout_ms": {"type": "integer", "minimum": 1},
+        "max_fetched_document_bytes": {"type": "integer", "minimum": 1},
+        "max_redirects": {"type": "integer", "minimum": 0, "maximum": 20},
+        "code_execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "subdirectory", "timeout_ms", "max_output_bytes", "allowed_executables"],
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "subdirectory": {"type": "string", "minLength": 1},
+            "timeout_ms": {"type": "integer", "minimum": 1},
+            "max_output_bytes": {"type": "integer", "minimum": 1},
+            "allowed_executables": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["benchmark_task_files", "output_report_directory", "official_evaluator_command", "repeated_run_count"],
+      "properties": {
+        "benchmark_task_files": {"type": "array", "items": {"type": "string"}},
+        "output_report_directory": {"type": "string", "minLength": 1},
+        "official_evaluator_command": {"type": ["string", "null"]},
+        "repeated_run_count": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

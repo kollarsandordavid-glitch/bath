@@ -1,0 +1,60 @@
+{
+  "workspace_root": ".",
+  "llm": {
+    "base_url": "http://127.0.0.1:8000/v1",
+    "api_key_env": "OPENAI_API_KEY",
+    "model": "gpt-oss-20b",
+    "temperature": 0.2,
+    "max_output_tokens": 2048,
+    "request_timeout_ms": 120000,
+    "retry_count": 3,
+    "backoff_policy": "exponential",
+    "initial_backoff_ms": 500
+  },
+  "context": {
+    "recent_action_window": 10,
+    "max_main_context_bytes": 65536,
+    "max_artifact_snippet_bytes": 4096,
+    "max_workspace_index_entries": 200,
+    "document_answer_context_bytes": 32768
+  },
+  "scheduler": {
+    "max_total_steps": 500,
+    "max_recursion_depth": 8,
+    "max_retries_per_task": 3,
+    "consolidation_interval": 10
+  },
+  "tools": {
+    "enabled": [
+      "file-read",
+      "file-write",
+      "file-list",
+      "file-search",
+      "web-search",
+      "http-fetch",
+      "document-ingest",
+      "document-answer"
+    ],
+    "allowed_web_search_providers": ["searxng", "commercial"],
+    "searxng_base_url": null,
+    "commercial_search_base_url": null,
+    "commercial_search_api_key_env": "SEARCH_API_KEY",
+    "pdf_extraction_command": "pdftotext",
+    "http_timeout_ms": 60000,
+    "max_fetched_document_bytes": 16777216,
+    "max_redirects": 5,
+    "code_execution": {
+      "enabled": false,
+      "subdirectory": "artifacts/code",
+      "timeout_ms": 30000,
+      "max_output_bytes": 1048576,
+      "allowed_executables": ["zig", "python3", "node", "sh"]
+    }
+  },
+  "evaluation": {
+    "benchmark_task_files": [],
+    "output_report_directory": "evaluation",
+    "official_evaluator_command": null,
+    "repeated_run_count": 1
+  }
+}

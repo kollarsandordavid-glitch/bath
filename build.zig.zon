@@ -1,0 +1,7 @@
+.{
+    .name = .long_horizon_agent,
+    .version = "1.0.0",
+    .minimum_zig_version = "0.14.1",
+    .fingerprint = 0xb71977f6d4ffa53b,
+    .paths = .{ "build.zig", "build.zig.zon", "src", "tests", "config", "docs", "README.md", "Dockerfile" },
+}
